@@ -1,5 +1,6 @@
+
 ---
-name: completion
+name: models
 
 on:                         # yamllint disable-line rule:truthy
   pull_request:
@@ -9,8 +10,8 @@ permissions:
   models: read
 
 jobs:
-  completion:
-    name: completion
+  chat-completion:
+    name: chat-completion
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -24,8 +25,28 @@ jobs:
           go-version-file: 'go.mod'
           cache: true
 
-      - name: Run main
+      - name: Run main (tell a joke)
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
-          go run .
+          go run . -message "Tell me a joke."
+  print-models:
+    name: print-models
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Print models
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: |
+          go run . -models
